@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="brand">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track & Trace, Intemo</title>
+  <meta name="description" content="Intemo monitors every shipment across carriers, posts milestone updates, and alerts your team the moment something slips.">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#0C0E14">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo" aria-label="Intemo home">
+          <img src="assets/intemo-logo.svg" alt="Intemo">
+        </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <div class="nav-dd">
+        <a href="products.html" class="nav-link nav-dd-trigger is-active">Products <i class="ti ti-chevron-down"></i></a>
+        <div class="nav-dd-menu">
+          <a href="inquiry-to-quote.html">Inquiry to Quote <span>Inbound inquiry → sent quote</span></a>
+          <a href="workflow-automation.html">Workflow Automation <span>Documents → job in ERP</span></a>
+          <a href="accounting-automation.html">Accounting Automation <span>Invoices → ERP, validated</span></a>
+          <a href="track-and-trace.html">Track &amp; Trace <span>Live shipment visibility</span></a>
+        </div>
+      </div>
+        <a href="customers.html" class="nav-link">Customers</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+      <div class="nav-right">
+        <a href="#" class="btn btn--primary btn--sm"><i class="ti ti-calendar"></i> Book a demo</a>
+        <button class="nav-toggle" aria-label="Open menu" id="navToggle"><i class="ti ti-menu-2"></i></button>
+      </div>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <div class="nav-mobile-sub">
+        <a href="inquiry-to-quote.html">Inquiry to Quote</a>
+        <a href="workflow-automation.html">Workflow Automation</a>
+        <a href="accounting-automation.html">Accounting Automation</a>
+        <a href="track-and-trace.html">Track &amp; Trace</a>
+      </div>
+      <a href="customers.html">Customers</a>
+      <a href="about.html">About</a>
+      <a href="#" class="btn btn--primary btn--block"><i class="ti ti-calendar"></i> Book a demo</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ PAGE HERO ============ -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="page-hero-inner">
+          <div class="eyebrow"><span class="live-dot"></span> Product · Track & Trace</div>
+          <h1>Live visibility on <em>every shipment</em>, end to end.</h1>
+          <p>Intemo monitors every shipment across carriers, posts milestone updates, and alerts your team the moment something slips.</p>
+          <div class="hero-ctas" style="margin-top:var(--sp-6);">
+            <a href="#" class="btn btn--primary"><i class="ti ti-calendar"></i> Book a demo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CAPABILITIES ============ -->
+    <section class="section--tight">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow eyebrow--dim">The agents</div>
+          <h2 class="section-title">One live view of every box.</h2>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-icon ai-green"><i class="ti ti-map-pin"></i></div>
+            <h3>Track agent</h3>
+            <p>Monitors every shipment across carriers and keeps status current in one place, no portal hopping.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon ai-blue"><i class="ti ti-flag"></i></div>
+            <h3>Milestone updates</h3>
+            <p>Posts gate-in, sailing, arrival and delivery milestones as they happen.</p>
+          </article>
+          <article class="card">
+            <div class="card-icon ai-green"><i class="ti ti-bell"></i></div>
+            <h3>Exception alerts</h3>
+            <p>Alerts your team the instant a shipment slips, with the context they need to act.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURE ROWS ============ -->
+    <section class="section">
+      <div class="container">
+        <div class="feature-row">
+          <div class="feature-text">
+            <h2>One live view across all carriers.</h2>
+            <p>Every shipment, every carrier, one current status, ready to share with your customer.</p>
+            <ul class="feature-list">
+              <li><i class="ti ti-check"></i> Multi-carrier tracking</li>
+              <li><i class="ti ti-check"></i> Unified live status</li>
+              <li><i class="ti ti-check"></i> Customer-ready updates</li>
+            </ul>
+          </div>
+          <div class="feature-media">
+            <div class="mock">
+              <div class="mock-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="t">live shipments</span></div>
+              <div class="mock-body">
+                <div class="mock-row" style="justify-content:space-between;"><span class="mock-head">Tracking board</span><span class="mock-pill b">1,240 live</span></div>
+                <div class="mock-kv"><span class="mock-k">MSKU 718 4432 · sea</span><span class="mock-pill b"><i class="ti ti-ship"></i> In transit</span></div>
+                <div class="mock-kv"><span class="mock-k">157-88421930 · air</span><span class="mock-pill n"><i class="ti ti-plane"></i> At origin</span></div>
+                <div class="mock-kv"><span class="mock-k">TLLU 904 1185 · sea</span><span class="mock-pill g"><i class="ti ti-anchor"></i> Arrived</span></div>
+                <div class="mock-kv"><span class="mock-k">607-21097744 · air</span><span class="mock-pill g"><i class="ti ti-check"></i> Delivered</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-row reverse">
+          <div class="feature-text">
+            <h2>Know about delays before your customer does.</h2>
+            <p>Intemo watches for exceptions in real time and alerts your team early, so you stay ahead of the call.</p>
+            <ul class="feature-list">
+              <li><i class="ti ti-check"></i> Real-time exception detection</li>
+              <li><i class="ti ti-check"></i> Proactive alerts</li>
+              <li><i class="ti ti-check"></i> ETA monitoring</li>
+            </ul>
+          </div>
+          <div class="feature-media">
+            <div class="mock">
+              <div class="mock-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="t">exceptions</span></div>
+              <div class="mock-body">
+                <div class="mock-card">
+                  <div class="mock-row"><div class="mock-ic r"><i class="ti ti-alert-triangle"></i></div><div class="mock-tx"><span class="mock-cap">Vessel delay · 2 days</span><span class="mock-sub">MSKU 718 4432 · transhipment SIN</span></div></div>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-row"><div class="mock-ic" style="background:rgba(242,169,60,.14);color:#E0922A;"><i class="ti ti-clock-exclamation"></i></div><div class="mock-tx"><span class="mock-cap">Customs hold</span><span class="mock-sub">157-88421930 · awaiting docs</span></div></div>
+                </div>
+                <div class="mock-card">
+                  <div class="mock-row"><div class="mock-ic g"><i class="ti ti-bell-ringing"></i></div><div class="mock-tx"><span class="mock-cap">ETA updated</span><span class="mock-sub">TLLU 904 1185 · arriving early</span></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stat-band">
+      <div class="container" style="padding-inline:0;">
+        <div class="stat-band-grid">
+          <div class="stat-band-item"><div class="n">1,240</div><div class="l">Shipments live</div></div>
+          <div class="stat-band-item"><div class="n">24/7</div><div class="l">Uptime</div></div>
+          <div class="stat-band-item"><div class="n">0</div><div class="l">Blind spots</div></div>
+          <div class="stat-band-item"><div class="n">Real-time</div><div class="l">Updates</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA BAND ============ -->
+    <section class="section cta-band">
+      <div class="container">
+        <div class="cta-box">
+          <div class="cta-box-inner">
+            <h2>Give your customers answers, instantly.</h2>
+            <p>See live track-and-trace running across multiple carriers in a quick walkthrough.</p>
+            <div class="hero-ctas">
+              <a href="#" class="btn btn--primary"><i class="ti ti-calendar"></i> Book a demo</a>
+              <a href="products.html" class="btn btn--ghost">All products</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo" aria-label="Intemo home">
+          <img src="assets/intemo-logo.svg" alt="Intemo">
+        </a>
+          <p>AI agents that automate freight operations end to end, from the first inquiry to the final invoice.</p>
+          <div class="footer-social">
+            <a href="https://www.linkedin.com/company/intemo-tech/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="ti ti-brand-linkedin"></i></a>
+            <a href="mailto:info@intemo.tech" aria-label="Email"><i class="ti ti-mail"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Products</h4>
+          <ul>
+            <li><a href="inquiry-to-quote.html">Inquiry to Quote</a></li>
+            <li><a href="workflow-automation.html">Workflow Automation</a></li>
+            <li><a href="accounting-automation.html">Accounting Automation</a></li>
+            <li><a href="track-and-trace.html">Track &amp; Trace</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="about.html">About</a></li>
+            <li><a href="customers.html">Customers</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Intemo. All rights reserved.</p>
+        <div class="legal">
+          <a href="privacy-policy.html">Privacy Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
