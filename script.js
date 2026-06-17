@@ -3,6 +3,123 @@
    Each block guards for its own elements, so it's safe site-wide.
    ============================================================ */
 
+/* ---- Forms: client validation + Formspark AJAX submit ---- */
+(function () {
+  var forms = document.querySelectorAll('form.fs-form');
+  if (!forms.length) return;
+
+  function setInvalid(field, on) {
+    if (on) field.classList.add('invalid'); else field.classList.remove('invalid');
+  }
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function validPhone(v) { var digits = (v || '').replace(/[^\d]/g, ''); return digits.length >= 7 && digits.length <= 15; }
+
+  // validate one .field; returns true if ok
+  function checkField(field) {
+    var key = field.getAttribute('data-name');
+    var input = (key && field.querySelector('[name="' + key + '"]')) || field.querySelector('input, select, textarea');
+    if (!input) return true;
+    var required = input.hasAttribute('required');
+    var val = (input.value || '').trim();
+    var bad = false;
+    if (required && !val) bad = true;
+    if (!bad && input.type === 'email' && val && !validEmail(val)) bad = true;
+    if (!bad && input.type === 'tel' && val && !validPhone(val)) bad = true;
+    setInvalid(field, bad);
+    return !bad;
+  }
+
+  function validate(form) {
+    var ok = true, firstBad = null;
+    form.querySelectorAll('.field').forEach(function (field) {
+      if (!checkField(field)) {
+        ok = false;
+        if (!firstBad) {
+          var key = field.getAttribute('data-name');
+          firstBad = (key && field.querySelector('[name="' + key + '"]')) || field.querySelector('input, select, textarea');
+        }
+      }
+    });
+    if (firstBad) firstBad.focus();
+    return ok;
+  }
+
+  forms.forEach(function (form) {
+    // phone fields: allow only digits and basic phone punctuation (no letters)
+    form.querySelectorAll('input[type=tel]').forEach(function (tel) {
+      tel.addEventListener('input', function () {
+        var cleaned = tel.value.replace(/[^\d\s\-()]/g, '');
+        if (cleaned !== tel.value) {
+          var pos = tel.selectionStart - (tel.value.length - cleaned.length);
+          tel.value = cleaned;
+          try { tel.setSelectionRange(pos, pos); } catch (e) {}
+        }
+      });
+      // block letter keys outright for clearer feedback
+      tel.addEventListener('keypress', function (e) {
+        if (e.key && e.key.length === 1 && !/[\d\s\-()]/.test(e.key)) e.preventDefault();
+      });
+    });
+
+    // validate a field the moment focus leaves it (email/phone highlight instantly)
+    form.addEventListener('focusout', function (e) {
+      var field = e.target.closest('.field');
+      if (!field) return;
+      var val = (e.target.value || '').trim();
+      // only flag on blur if the user actually typed something or it's empty-required handled at submit
+      if (val) checkField(field);
+    });
+
+    // clear invalid state as the user fixes a field
+    form.addEventListener('input', function (e) {
+      var field = e.target.closest('.field');
+      if (field && field.classList.contains('invalid')) field.classList.remove('invalid');
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var status = form.querySelector('.form-status');
+      var btn = form.querySelector('button[type=submit]');
+      if (status) { status.className = 'form-status'; status.textContent = ''; }
+
+      if (!validate(form)) {
+        if (status) { status.className = 'form-status bad show'; status.innerHTML = '<i class="ti ti-alert-circle"></i> Please fix the highlighted fields.'; }
+        return;
+      }
+
+      var action = form.getAttribute('action') || '';
+      // guard: not configured yet
+      if (action.indexOf('YOUR-') !== -1) {
+        if (status) { status.className = 'form-status bad show'; status.innerHTML = '<i class="ti ti-alert-circle"></i> Form endpoint not configured yet.'; }
+        return;
+      }
+
+      var data = {};
+      new FormData(form).forEach(function (v, k) { data[k] = v; });
+
+      if (btn) { btn.disabled = true; }
+      if (status) { status.className = 'form-status show'; status.innerHTML = '<i class="ti ti-loader"></i> Sending…'; }
+
+      fetch(action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function (res) {
+        if (!res.ok) throw new Error('bad status ' + res.status);
+        // swap to success panel
+        var card = form.parentElement;
+        var success = card && card.querySelector('.form-success');
+        form.style.display = 'none';
+        if (success) success.classList.add('show');
+        else if (status) { status.className = 'form-status ok show'; status.innerHTML = '<i class="ti ti-check"></i> Sent — thank you!'; }
+      }).catch(function () {
+        if (btn) btn.disabled = false;
+        if (status) { status.className = 'form-status bad show'; status.innerHTML = '<i class="ti ti-alert-circle"></i> Something went wrong. Please email info@intemo.tech.'; }
+      });
+    });
+  });
+})();
+
 /* ---- Sliding nav underline (animates between links on page change) ---- */
 (function () {
   var links = document.querySelector('.nav-links');
@@ -164,13 +281,15 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   function px(n) { return { x: n.x * wrap.clientWidth, y: n.y * wrap.clientHeight }; }
+  // nodes scale with canvas width (reference 500px) so they don't crowd/clip on mobile
+  function nodeScale() { return Math.max(0.62, Math.min(1, wrap.clientWidth / 500)); }
 
   // pick the largest font (capped by radius) at which the label fits inside the node
   function fitFont(label, r) {
     var size = Math.min(13, Math.round(r * 0.5));
-    var maxW = r * 2 - 10; // inner width with padding
+    var maxW = r * 2 - 8; // inner width with padding
     ctx.font = '500 ' + size + 'px Geist, sans-serif';
-    while (size > 7 && ctx.measureText(label).width > maxW) {
+    while (size > 6 && ctx.measureText(label).width > maxW) {
       size -= 1;
       ctx.font = '500 ' + size + 'px Geist, sans-serif';
     }
@@ -179,6 +298,7 @@
 
   function frame() {
     var w = wrap.clientWidth, h = wrap.clientHeight;
+    var s = nodeScale();
     ctx.clearRect(0, 0, w, h);
 
     edges.forEach(function (e) {
@@ -190,18 +310,19 @@
       p.t += p.spd; if (p.t > 1) p.t = 0;
       var a = px(nodes[p.e[0]]), b = px(nodes[p.e[1]]);
       var x = a.x + (b.x - a.x) * p.t, y = a.y + (b.y - a.y) * p.t;
-      ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(x, y, 2.5 * s, 0, Math.PI * 2);
       ctx.fillStyle = COL.accent; ctx.fill();
     });
     nodes.forEach(function (n) {
       var p = px(n);
-      ctx.beginPath(); ctx.arc(p.x, p.y, n.r + 6, 0, Math.PI * 2);
+      var r = n.r * s;
+      ctx.beginPath(); ctx.arc(p.x, p.y, r + 6 * s, 0, Math.PI * 2);
       ctx.fillStyle = GLOW; ctx.fill();
-      ctx.beginPath(); ctx.arc(p.x, p.y, n.r, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
       ctx.fillStyle = FILL; ctx.fill();
       ctx.strokeStyle = roleStroke(n.role); ctx.lineWidth = 1.5; ctx.stroke();
       ctx.fillStyle = roleText(n.role);
-      ctx.font = '500 ' + fitFont(n.label, n.r) + 'px Geist, sans-serif';
+      ctx.font = '500 ' + fitFont(n.label, r) + 'px Geist, sans-serif';
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(n.label, p.x, p.y);
     });
@@ -395,18 +516,20 @@
 
 /* ---- ERP carousel: repeat to fill width, then duplicate for seamless loop ---- */
 (function () {
-  var track = document.getElementById('erpTrack');
-  if (!track) return;
-  var base = track.innerHTML;
-  var viewport = (track.parentElement && track.parentElement.clientWidth) || window.innerWidth;
-  // repeat the base set until one sequence comfortably exceeds the viewport
-  var guard = 0;
-  while (track.scrollWidth < viewport * 1.5 && guard < 20) { track.innerHTML += base; guard++; }
-  var halfWidth = track.scrollWidth;
-  // duplicate the whole sequence so translateX(-50%) loops seamlessly
-  track.innerHTML += track.innerHTML;
-  // constant, calm speed (~55px/s) regardless of how many logos
-  track.style.animationDuration = Math.max(24, Math.round(halfWidth / 55)) + 's';
+  var tracks = document.querySelectorAll('.erp-track');
+  if (!tracks.length) return;
+  tracks.forEach(function (track) {
+    var base = track.innerHTML;
+    var viewport = (track.parentElement && track.parentElement.clientWidth) || window.innerWidth;
+    // repeat the base set until one sequence comfortably exceeds the viewport
+    var guard = 0;
+    while (track.scrollWidth < viewport * 1.5 && guard < 20) { track.innerHTML += base; guard++; }
+    var halfWidth = track.scrollWidth;
+    // duplicate the whole sequence so translateX(-50%) loops seamlessly
+    track.innerHTML += track.innerHTML;
+    // constant, calm speed (~55px/s) regardless of how many logos
+    track.style.animationDuration = Math.max(24, Math.round(halfWidth / 55)) + 's';
+  });
 })();
 
 /* ---- ROI calculator ---- */
