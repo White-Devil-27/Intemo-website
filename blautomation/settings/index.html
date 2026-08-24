@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SI to BL Orchestration — Settings | Intemo</title>
+  <meta name="description" content="Configure the SI to BL orchestration engine: shipping instructions reading, audit, bill of lading generation and masters.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://www.intemo.tech/blautomation/settings">
+  <link rel="icon" href="../../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../assets/favicon-16.png">
+  <link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#f8fafc">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../orchestration-settings.css">
+</head>
+<body class="os-body">
+
+  <div class="os-topbar">
+    <a href="https://www.intemo.tech/" class="os-topbar-logo" aria-label="Intemo home">
+      <img src="../../assets/intemo-logo.svg" alt="Intemo">
+    </a>
+    <span class="os-topbar-sep">/</span>
+    <span class="os-topbar-label">SI to BL Automation</span>
+    <a href="https://www.intemo.tech/" class="os-topbar-back">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"></path></svg>
+      intemo.tech
+    </a>
+  </div>
+
+  <div class="os-page">
+
+    <div class="os-head">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6h.09A1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      <h1>Settings</h1>
+    </div>
+    <p class="os-sub">Configure workflow automation and rule management</p>
+
+    <nav class="os-tabs" aria-label="Settings sections">
+      <span class="os-tab is-active" aria-current="page">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="5" rx="1"></rect><rect x="2" y="16" width="6" height="5" rx="1"></rect><rect x="16" y="16" width="6" height="5" rx="1"></rect><path d="M12 8v4M5 16v-2h14v2"></path></svg>
+        Orchestration Engine
+      </span>
+      <span class="os-tab">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v18M4 7h16M6 7l-3 6h6zM18 7l3 6h-6z"></path></svg>
+        Rules
+      </span>
+      <span class="os-tab">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+        Email
+      </span>
+      <span class="os-tab">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c3 3.5 3 14 0 18M12 3c-3 3.5-3 14 0 18"></path></svg>
+        Global Rules
+      </span>
+      <span class="os-tab">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3h14a2 2 0 0 1 2 2v16l-9-5-9 5V5a2 2 0 0 1 2-2z"></path></svg>
+        Default Values
+      </span>
+      <span class="os-tab">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M12 15v-5M9.5 12.5 12 10l2.5 2.5"></path></svg>
+        File Uploads
+      </span>
+    </nav>
+
+    <section class="os-summary">
+      <div class="os-summary-top">
+        <div>
+          <h2>Configuration Summary</h2>
+          <div class="os-badges">
+            <span class="os-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+              Shipping Instructions
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.2 2.4 2.4 4.6-5"></path></svg>
+            </span>
+            <span class="os-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5M9 13h6M9 17h4"></path></svg>
+              Audit
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.2 2.4 2.4 4.6-5"></path></svg>
+            </span>
+            <span class="os-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5M9 13h6M9 17h4"></path></svg>
+              PRQ
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="m8.5 12.2 2.4 2.4 4.6-5"></path></svg>
+            </span>
+          </div>
+        </div>
+        <button type="button" class="os-btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-5M12 8.2h.01"></path></svg>
+          Details
+        </button>
+      </div>
+      <p><strong>Masters:</strong> Shipper, Consignee, Notify Party &amp; Ports</p>
+    </section>
+
+    <div class="os-apply-row">
+      <div class="os-apply-text">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" style="margin-top:4px"><circle cx="9" cy="8" r="3.2"></circle><path d="M2.5 19c0-3.3 2.9-5.2 6.5-5.2s6.5 1.9 6.5 5.2M17 11a3 3 0 1 0 0-6M18 19c0-2.2-.6-3.6-1.6-4.5"></path></svg>
+        <div>
+          <div class="os-apply-title">Apply Orchestration rules to</div>
+          <div class="os-apply-sub">Configure orchestration rules for all or specific customers</div>
+        </div>
+      </div>
+      <button type="button" class="os-btn-primary">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><path d="M17 21v-8H7v8M7 3v5h8"></path></svg>
+        Save Configuration
+      </button>
+    </div>
+
+    <div class="os-grid">
+
+      <!-- 1. Shipping Instructions Reading -->
+      <section class="os-card tint">
+        <div class="os-card-head">
+          <div class="os-card-head-left">
+            <span class="os-num tint">1</span>
+            <div>
+              <h3>Shipping Instructions Reading</h3>
+              <p>Read emails &amp; fetch shipping instructions parameters</p>
+            </div>
+          </div>
+          <div class="os-switch" role="img" aria-label="Enabled"><span class="os-switch-dot"></span></div>
+        </div>
+
+        <div class="os-row-between">
+          <div class="os-row-label">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg>
+            Email Configuration
+          </div>
+          <button type="button" class="os-btn-fill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg>
+            Edit Providers
+          </button>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">Email Service Provider</span>
+          <div class="os-field-static between">
+            GMAIL
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"></path></svg>
+          </div>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">Login Email</span>
+          <div class="os-field-static">si2bl_prod@intemo.tech</div>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">App Password</span>
+          <div class="os-secret-row">
+            <div class="os-field-static">••••••••••••••••</div>
+            <button type="button" class="os-eye-btn" aria-label="Show password">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="2.6"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="os-field">
+          <label for="sibl-doctype">Doc Type</label>
+          <select id="sibl-doctype" class="os-select">
+            <option selected>Shipping Instructions</option>
+            <option>Commercial Invoice</option>
+            <option>Packing List</option>
+            <option>BL Draft</option>
+            <option>AWB Draft</option>
+            <option>MSDS</option>
+            <option>Others</option>
+          </select>
+        </div>
+
+        <div class="os-field-2col">
+          <div>
+            <span class="os-field-label">IMAP Server</span>
+            <div class="os-field-static">imap.gmail.com</div>
+          </div>
+          <div>
+            <span class="os-field-label">SMTP Server</span>
+            <div class="os-field-static">smtp.gmail.com</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Shipping Instructions Audit -->
+      <section class="os-card plain">
+        <div class="os-card-head">
+          <div class="os-card-head-left">
+            <span class="os-num plain">2</span>
+            <div>
+              <h3>Shipping Instructions Audit</h3>
+              <p>Audit shipping instructions against multiple data points</p>
+            </div>
+          </div>
+          <div class="os-switch" role="img" aria-label="Enabled"><span class="os-switch-dot"></span></div>
+        </div>
+
+        <div class="os-table">
+          <div class="os-table-head">
+            <div>Verify</div>
+            <div>Source Name</div>
+            <div>Actions</div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Shipper Details</div>
+            <div class="os-cell-status">ERP <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Shipper Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Shipper Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Consignee Details</div>
+            <div class="os-cell-status">ERP <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Consignee Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Consignee Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Notify Party Details</div>
+            <div class="os-cell-status">ERP <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Notify Party Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Notify Party Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Port Details</div>
+            <div class="os-cell-status">Masters <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Port Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Port Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Cargo Details</div>
+            <div class="os-cell-status">ERP <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Cargo Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Cargo Details"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+          <div class="os-table-row">
+            <div class="os-cell-name">Commodity Description</div>
+            <div class="os-cell-status">ERP <span class="os-pill">Active</span></div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Commodity Description"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Commodity Description"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Bill of Lading Generation -->
+      <section class="os-card tint">
+        <div class="os-card-head">
+          <div class="os-card-head-left">
+            <span class="os-num tint">3</span>
+            <div>
+              <h3>Bill of Lading Generation</h3>
+              <p>Generate Bills of Lading from audited shipping instructions in the ERP</p>
+            </div>
+          </div>
+          <div class="os-switch" role="img" aria-label="Enabled"><span class="os-switch-dot"></span></div>
+        </div>
+
+        <div class="os-row-between">
+          <div class="os-row-label">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 9h18M9 9v11"></path></svg>
+            ERP Configuration
+          </div>
+          <button type="button" class="os-btn-fill">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg>
+            Edit Providers
+          </button>
+        </div>
+
+        <div class="os-field">
+          <label for="sibl-erp">ERP Service Provider</label>
+          <select id="sibl-erp" class="os-select os-erp-select">
+            <option selected>Cargowise</option>
+            <option>Logisys</option>
+            <option>Shipmnts</option>
+            <option>Fresa</option>
+            <option>eBMS</option>
+            <option>Others</option>
+          </select>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">User ID</span>
+          <div class="os-field-static">si2bl_prod</div>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">Password</span>
+          <div class="os-secret-row">
+            <div class="os-field-static">••••••••••••••••</div>
+            <button type="button" class="os-eye-btn" aria-label="Show password">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z"></path><circle cx="12" cy="12" r="2.6"></circle></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="os-field">
+          <span class="os-field-label">URL</span>
+          <div class="os-field-static os-erp-url">https://api.cargowise.com/prq</div>
+        </div>
+      </section>
+
+      <!-- 4. Masters -->
+      <section class="os-card plain">
+        <div class="os-card-head">
+          <div class="os-card-head-left">
+            <span class="os-num plain">4</span>
+            <div>
+              <h3>Masters</h3>
+              <p>Maintain reference data used across shipping instructions processing</p>
+            </div>
+          </div>
+          <div class="os-switch" role="img" aria-label="Enabled"><span class="os-switch-dot"></span></div>
+        </div>
+
+        <div class="os-table">
+          <div class="os-table-head">
+            <div>Master</div>
+            <div>Status</div>
+            <div>Actions</div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Shipper</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Shipper"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Shipper"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Shipper"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Consignee</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Consignee"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Consignee"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Consignee"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Notify Party</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Notify Party"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Notify Party"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Notify Party"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Port</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Port"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Port"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Port"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Package Type</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Package Type"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Package Type"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Package Type"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Units</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Units"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Units"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Units"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+
+          <div class="os-table-row"><div class="os-cell-name">Currency</div>
+            <div class="os-cell-toggle">
+              <button type="button" class="os-toggle-track is-on" role="switch" aria-checked="true" aria-label="Currency"><span class="os-toggle-dot"></span></button>
+              <span class="os-toggle-label is-on">Active</span>
+            </div>
+            <div class="os-cell-actions">
+              <button type="button" class="os-icon-btn" aria-label="Edit Currency"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0ea5e9" stroke-width="1.9" stroke-linecap="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"></path><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"></path></svg></button>
+              <button type="button" class="os-icon-btn" aria-label="Remove Currency"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"></path></svg></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="../../orchestration-settings.js"></script>
+</body>
+</html>
