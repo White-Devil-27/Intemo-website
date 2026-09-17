@@ -1438,12 +1438,8 @@ function App(){
       <div style={{display:"flex",flexDirection:"column",height:"100vh",background:C.bg}}>
         {/* TOP BAR */}
         <div style={{height:52,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",padding:"0 18px",gap:14,flexShrink:0,background:C.white,boxShadow:"0 1px 4px rgba(27,79,216,.10)"}}>
-          <div style={{display:"flex",alignItems:"center",gap:0}}>
-            <svg width="130" height="38" viewBox="0 0 130 38" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Intemo">
-              <circle cx="19" cy="4.5" r="4" fill="#3DAA3B"/>
-              <path d="M22 9 Q26 7 24 11M24 11 Q20 20 18 30M18 30 Q14 34 16 37" stroke="#1B4FD8" strokeWidth="2.6" strokeLinecap="round" fill="none"/>
-              <text x="30" y="31" fontFamily="Inter,Arial,sans-serif" fontSize="22" fontWeight="800" fill="#1B4FD8" letterSpacing="0.8">NTEMO</text>
-            </svg>
+          <div style={{display:"flex",alignItems:"center",width:130,height:38}}>
+            <img src="../assets/intemo-logo.svg" alt="Intemo" style={{display:"block",width:92,height:38,objectFit:"contain",objectPosition:"left center"}}/>
           </div>
           <div style={{width:1,height:20,background:C.border}}/>
           <span style={{fontSize:13,fontWeight:600,color:C.text}}>AI Workflow Builder</span>
