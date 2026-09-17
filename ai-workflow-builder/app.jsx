@@ -54,7 +54,7 @@ const OUTPUT_TYPES = {
 const OUTPUT_LABELS = {api:"REST API",webhook:"Webhook",email:"Email",ftp:"FTP / SFTP",erp:"ERP Entry"};
 
 const DOC_TYPES = {
-  awb:{label:"Air Waybill (AWB)",short:"AWB",color:C.blue,fields:["AWB Number","Airline Code","Airline Name","Vendor Name","Flight #","Date","Origin","Destination","Product Description","Weight (kg)","Volume (cbm)","Freight Amount","Currency"]},
+  awb:{label:"Air Waybill (AWB)",short:"AWB",color:C.blue,fields:["AWB Number","Airline Code","Airline Name","Vendor Name","Flight #","Date","Origin","Destination","Product Description","Weight (kg)","Volume (cbm)","Freight Amount","Currency","LAT","Pickup","Delivery Point","SCI","ULD"]},
   bl:{label:"Bill of Lading (BL)",short:"BL",color:C.accent,fields:["BL Number","Shipper Name","Shipper Address","Forwarder Name","Consignee Name","Consignee Address","Consignee GST","Notify Party","Vessel","Voyage","Shipping Line","Port of Loading","Port of Discharge","Date","Freight Terms","Container #","Seal #","Product Description","Weight","Volume"]},
   invoice:{label:"Commercial Invoice",short:"INV",color:C.purple,fields:["Invoice Number","Invoice Date","Vendor Name","Vendor Address","Vendor Tax ID","Customer Name","Customer Address","Line Items","Subtotal","Tax Amount","Total Amount","Currency","Payment Terms","Due Date"]},
   si:{label:"Shipping Instruction (SI)",short:"SI",color:C.cyan,fields:["SI Number","Shipper","Consignee","Notify Party","Port of Loading","Port of Discharge","Vessel","Voyage","Container Type","Cargo Description","Weight","Volume","Special Instructions"]},
@@ -178,66 +178,47 @@ function parseActionsNL(text) {
   return{items:[...new Set(items)],remarks,docType,docFields};
 }
 
+function classifyRuleSentence(s) {
+  const t=s.toLowerCase();
+  const numericOp=/\b(\w+)\s*(<>|!=|<=|>=|<|>)\s*[\d]+/.test(t);
+  if(/\b(empty|missing|blank|raise.{0,10}alert)\b/.test(t)||t.includes("is empty")||t.includes("raise an alert"))return "empty_check";
+  if(numericOp&&!/\b(prefix|suffix|route|forward|assign)\b/.test(t))return "empty_check";
+  if(/\b(prefix|suffix|prepend|append)\b/.test(t))return "prefix";
+  if(/\b(mismatch|amount differ|total differ|discrepan)\b/.test(t))return "amount_check";
+  if(/\b(duplicate|already exist|already booked)\b/.test(t))return "duplicate";
+  if(/\b(concat|concatenat|merge field|combine field|split by)\b/.test(t))return "concat";
+  if(/\b(route to|forward to|send to team|escalate to|assign to)\b/.test(t)||
+    /\b(destination is|if destination|if origin|if carrier|if country)\b/.test(t)||
+    /@[\w.-]+\.[a-z]{2,}/.test(t)||
+    (/\bif\b/.test(t)&&/\b(route|forward|send|assign|team|email|notify|escalate)\b/.test(t))||
+    (/\bwhen\b/.test(t)&&/\b(route|forward|send|assign|team|notify)\b/.test(t)))return "conditional";
+  if(/\bif\b/.test(t)||/\bwhen\b/.test(t))return "conditional";
+  return "custom";
+}
+
 function parseRulesNL(text) {
-  // Split on ". " only when followed by capital or end-of-string, to avoid splitting mid-sentence
-  // Also split on ; and newlines
-  const sentences = text
-    .split(/\.\s+(?=[A-Z0-9"'If])|;\s*|\n+/)
-    .map(s=>s.trim()).filter(s=>s.length>3);
-
-  const rules=[];
-  sentences.forEach((s,idx)=>{
-    const t=s.toLowerCase();
-    const uid=Date.now()+"_"+idx+"_"+Math.random().toString(36).slice(2,6);
-
-    // 1. Empty / alert checks FIRST (most specific)
-    if(/\b(empty|missing|blank|raise.{0,10}alert)\b/.test(t)||t.includes("is empty")||t.includes("raise an alert")){
-      rules.push({id:uid+"a",template:"empty_check",label:"Empty Field Alert",logic:s,color:C.red});
-    }
-    // 2. Prefix/suffix — explicit keyword "prefix" or "suffix" or "as prefix"
-    else if(/\b(prefix|suffix|prepend|append)\b/.test(t)){
-      rules.push({id:uid+"b",template:"prefix",label:"Add Prefix / Suffix",logic:s,color:C.amber});
-    }
-    // 3. Amount mismatch
-    else if(/\b(mismatch|amount differ|total differ|discrepan)\b/.test(t)){
-      rules.push({id:uid+"c",template:"amount_check",label:"Amount Mismatch",logic:s,color:C.purple});
-    }
-    // 4. Duplicate check
-    else if(/\b(duplicate|already exist|already booked)\b/.test(t)){
-      rules.push({id:uid+"d",template:"duplicate",label:"Duplicate Check",logic:s,color:C.red});
-    }
-    // 5. Concatenate / split
-    else if(/\b(concat|concatenat|merge field|combine field|split by)\b/.test(t)){
-      rules.push({id:uid+"f",template:"concat",label:"Concatenate / Split Fields",logic:s,color:C.cyan});
-    }
-    // 6. Conditional route — "if X, route/send/forward/assign", destination-based, email-based
-    else if(
-      /\b(route to|forward to|send to team|escalate to|assign to)\b/.test(t)||
-      /\b(destination is|if destination|if origin|if carrier|if country)\b/.test(t)||
-      /@[\w.-]+\.[a-z]{2,}/.test(t)||
-      (/\bif\b/.test(t)&&/\b(route|forward|send|assign|team|email|notify|escalate)\b/.test(t))||
-      (/\bwhen\b/.test(t)&&/\b(route|forward|send|assign|team|notify)\b/.test(t))
-    ){
-      rules.push({id:uid+"e",template:"conditional",label:"Conditional Route",logic:s,color:C.accent});
-    }
-    // 7. Any remaining "if/when" clause that didn't match above
-    else if(/\bif \b/.test(t)||/\bwhen \b/.test(t)){
-      rules.push({id:uid+"e2",template:"conditional",label:"Conditional Route",logic:s,color:C.accent});
-    }
-    // 8. Fallback
-    else if(s.length>6){
-      rules.push({id:uid+"z",template:"custom",label:"Custom Rule",logic:s,color:C.purple});
-    }
+  const sentences=text.split(/\.[ \t]+(?=[A-Z"'])|;[ \t]*|\r?\n/)
+    .map(s=>s.replace(/^[-•*\s]+/,"").trim()).filter(s=>s.length>3);
+  const buckets={};
+  const TMPL_META={
+    empty_check:{label:"Empty Field Alert",icon:"🔴",color:C.red},
+    prefix:{label:"Add Prefix / Suffix",icon:"✏️",color:C.amber},
+    amount_check:{label:"Amount Mismatch",icon:"💱",color:C.purple},
+    duplicate:{label:"Duplicate Check",icon:"🔁",color:C.red},
+    concat:{label:"Concatenate / Split",icon:"🔗",color:C.cyan},
+    conditional:{label:"Conditional Route",icon:"🔀",color:C.accent},
+    custom:{label:"Custom Rule",icon:"📐",color:C.purple}
+  };
+  sentences.forEach(s=>{
+    const tmpl=classifyRuleSentence(s);
+    if(!buckets[tmpl])buckets[tmpl]={...TMPL_META[tmpl],lines:[]};
+    if(!buckets[tmpl].lines.includes(s))buckets[tmpl].lines.push(s);
   });
-
-  // Deduplicate only truly identical logic strings (allow multiple rules of same template)
-  const seenLogic=new Set();
-  return rules.filter(r=>{
-    const key=r.template+"|"+r.logic.trim().toLowerCase().slice(0,80);
-    if(seenLogic.has(key))return false;
-    seenLogic.add(key);
-    return true;
-  });
+  const uid=Date.now();
+  return Object.entries(buckets).map(([tmpl,b],i)=>({
+    id:uid+"_"+i+"_"+tmpl,template:tmpl,label:b.label,icon:b.icon,color:b.color,
+    logic:b.lines.length===1?b.lines[0]:b.lines.map((l,n)=>`${n+1}. ${l}`).join("\n")
+  }));
 }
 
 function parseMastersNL(text) {
@@ -595,7 +576,16 @@ function RuleItem({rule:r,isOpen,onToggleOpen,onChangeLogic,onBlurLogic,onRemove
         <span style={{fontSize:14}}>{RULE_TEMPLATES.find(x=>x.id===r.template)?.icon||"📐"}</span>
         <div style={{flex:1}}>
           <div style={{fontSize:11,fontWeight:700,color:r.color}}>{r.label}</div>
-          {r.logic&&<div style={{fontSize:10,color:C.textMuted,marginTop:1,fontStyle:"italic"}}>Logic: {r.logic}</div>}
+          {r.logic&&(
+            <div style={{fontSize:10,color:C.textMuted,marginTop:3}}>
+              {r.logic.split("\n").filter(Boolean).map((line,i)=>(
+                <div key={i} style={{display:"flex",gap:5,marginTop:i>0?2:0}}>
+                  <span style={{color:r.color,fontWeight:700,flexShrink:0,fontSize:9}}>{r.logic.includes("\n")?"•":""}</span>
+                  <span style={{fontStyle:"italic"}}>{line}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <button onClick={onToggleOpen} style={{fontSize:10,padding:"2px 8px",borderRadius:5,border:`1px solid ${r.color}55`,color:r.color,background:r.color+"12",cursor:"pointer"}}>
           {isOpen?"▲ Hide":"✏ Edit logic"}
@@ -608,7 +598,7 @@ function RuleItem({rule:r,isOpen,onToggleOpen,onChangeLogic,onBlurLogic,onRemove
           <textarea value={r.logic||""} onChange={e=>onChangeLogic(e.target.value)}
             onBlur={e=>{onBlurLogic(e.target.value,prevRef.current);prevRef.current=e.target.value;}}
             placeholder={RULE_TEMPLATES.find(x=>x.id===r.template)?.logicPlaceholder||"Describe the rule logic…"}
-            rows={2} style={{width:"100%",padding:"6px 9px",border:`1px solid ${r.color}55`,borderRadius:6,outline:"none",fontSize:11,color:C.text,background:"white",fontFamily:"inherit",resize:"vertical"}}/>
+            rows={Math.max(2,(r.logic||"").split("\n").length+1)} style={{width:"100%",padding:"6px 9px",border:`1px solid ${r.color}55`,borderRadius:6,outline:"none",fontSize:11,color:C.text,background:"white",fontFamily:"inherit",resize:"vertical",lineHeight:1.6}}/>
         </div>
       )}
     </div>
@@ -623,10 +613,18 @@ function RulesPanel({config,onChange,inputMode,convoTexts,setConvoTexts}) {
 
   const applyNL=(p)=>{
     if(!p?.length)return;
-    const deduped=[...items];
-    p.forEach(r=>{if(!deduped.find(x=>x.template===r.template))deduped.push(r);});
-    setItems(deduped);onChange({items:deduped});
-    addAuditEntry("Rules","Rules added via conversational",p.map(r=>r.label).join(", "),"","");
+    const merged=[...items];
+    p.forEach(newR=>{
+      const existing=merged.find(x=>x.template===newR.template);
+      if(existing){
+        const existingLines=existing.logic?existing.logic.split("\n").map(l=>l.replace(/^\d+\.\s*/,"").trim()).filter(Boolean):[];
+        const newLines=newR.logic?newR.logic.split("\n").map(l=>l.replace(/^\d+\.\s*/,"").trim()).filter(Boolean):[];
+        const allLines=[...existingLines,...newLines.filter(l=>!existingLines.some(e=>e.toLowerCase()===l.toLowerCase()))];
+        existing.logic=allLines.length===1?allLines[0]:allLines.map((l,n)=>`${n+1}. ${l}`).join("\n");
+      } else merged.push(newR);
+    });
+    setItems(merged);onChange({items:merged});
+    addAuditEntry("Rules","Rules updated via conversational",p.map(r=>r.label).join(", "),"","");
   };
 
   const addTemplate=(t)=>{
@@ -949,6 +947,23 @@ function LogsPanel() {
   );
 }
 
+function resolveLAT(rulesConfig) {
+  const allLogic=(rulesConfig?.items||[]).map(r=>r.logic||"").join(" ");
+  const match=allLogic.match(/\b([TD])([1-7])\b/i);
+  if(!match)return null;
+  const dayIndex=parseInt(match[2],10);
+  const dayNames=["","Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+  const dateMatch=allLogic.match(/(\d{4}[-\/]\d{2}[-\/]\d{2})|(\d{1,2}[-\/]\d{1,2}[-\/]\d{4})/);
+  let anchor=new Date();
+  if(dateMatch){const parsed=new Date(dateMatch[0].replace(/\//g,"-"));if(!isNaN(parsed))anchor=parsed;}
+  const anchorISO=anchor.getDay()===0?7:anchor.getDay();
+  const monday=new Date(anchor);monday.setDate(anchor.getDate()-(anchorISO-1));
+  const target=new Date(monday);target.setDate(monday.getDate()+(dayIndex-1));
+  const dd=String(target.getDate()).padStart(2,"0"),mm=String(target.getMonth()+1).padStart(2,"0"),yyyy=target.getFullYear();
+  const hh=String(anchor.getHours()).padStart(2,"0"),min=String(anchor.getMinutes()).padStart(2,"0");
+  return {raw:match[0].toUpperCase(),dayName:dayNames[dayIndex],date:`${dd}-${mm}-${yyyy}`,display:`${dayNames[dayIndex]} ${dd}-${mm}-${yyyy} ${hh}:${min}`,mapped:`${match[0].toUpperCase()} → ${dayNames[dayIndex]} (${dd}/${mm}/${yyyy})`};
+}
+
 // ─── FLOWCHART ────────────────────────────────────────────────────────────────
 function FlowChart({wfConfig,onEditNode}) {
   const trig=wfConfig.trigger||{}, acts=wfConfig.actions||{}, rules=wfConfig.rules||{}, masters=wfConfig.masters||{}, outs=wfConfig.output||{}, alerts=wfConfig.alerts||{};
@@ -976,18 +991,20 @@ function FlowChart({wfConfig,onEditNode}) {
     const mx=(x1+x2)/2;
     return <path d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" stroke={configured?C.accent:"#D1D5DB"} strokeWidth={configured?2.5:1.5} markerEnd={`url(#arr-${configured?"g":"gr"})`}/>;
   }
-  function NodeCard({idx,title,subtitle,color,icon,children,configured,onClick}){
+  function NodeCard({idx,title,subtitle,color,icon,children,configured,onClick,settingsUrl}){
     const x=xs[idx], y=ys[idx], w=CW, h=heights[idx];
     return(
       <foreignObject x={x} y={y} width={w} height={h}>
-        <div xmlns="http://www.w3.org/1999/xhtml" onClick={onClick}
-          style={{cursor:onClick?"pointer":"default",background:"white",border:`1.5px solid ${configured?color:C.border}`,borderRadius:12,height:"100%",overflow:"hidden",boxShadow:configured?`0 4px 12px ${color}22`:C.shadowMd,fontFamily:"Inter,sans-serif",fontSize:12,userSelect:"none"}}>
+        <div xmlns="http://www.w3.org/1999/xhtml"
+          style={{cursor:"default",background:"white",border:`1.5px solid ${configured?color:C.border}`,borderRadius:12,height:"100%",overflow:"hidden",boxShadow:configured?`0 4px 12px ${color}22`:C.shadowMd,fontFamily:"Inter,sans-serif",fontSize:12,userSelect:"none"}}>
           <div style={{padding:"7px 10px",borderBottom:`1px solid ${C.border}`,background:configured?color+"08":"#FAFAFA",display:"flex",alignItems:"center",gap:6}}>
             <div style={{width:22,height:22,borderRadius:6,background:configured?color+"18":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0}}>{icon}</div>
-            <div style={{flex:1,minWidth:0}}>
+            <div style={{flex:1,minWidth:0,cursor:onClick?"pointer":"default"}} onClick={onClick}>
               <div style={{fontSize:11,fontWeight:700,color:configured?color:C.textMid,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{title}</div>
               <div style={{fontSize:8,color:C.textLight,textTransform:"uppercase",letterSpacing:".06em"}}>{subtitle}</div>
             </div>
+            <button title="Settings" onClick={e=>{e.stopPropagation();const a=document.createElement("a");a.href=settingsUrl;a.target="_blank";a.rel="noopener noreferrer";document.body.appendChild(a);a.click();document.body.removeChild(a);}}
+              style={{width:20,height:20,borderRadius:5,border:`1px solid ${configured?color+"55":C.border}`,background:configured?color+"12":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:11,color:configured?color:C.textMuted,lineHeight:1,padding:0}}>⚙</button>
             <div style={{width:7,height:7,borderRadius:"50%",background:configured?C.accent:"#E5E7EB",flexShrink:0}}/>
           </div>
           <div style={{padding:"8px 10px"}}>{children}</div>
@@ -997,6 +1014,9 @@ function FlowChart({wfConfig,onEditNode}) {
   }
   function Row({label,value,color}){return(<div style={{marginBottom:5}}><div style={{fontSize:8,fontWeight:600,textTransform:"uppercase",letterSpacing:".04em",color:C.textLight}}>{label}</div><div style={{fontSize:10,fontWeight:600,color:color||C.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{value||<span style={{color:C.textLight,fontWeight:400}}>—</span>}</div></div>);}
 
+  const latInfo=acts.docType==="awb"?resolveLAT(rules):null;
+  const latDisplay=latInfo?latInfo.display:(()=>{const n=new Date();const d=String(n.getDate()).padStart(2,"0"),m=String(n.getMonth()+1).padStart(2,"0"),y=n.getFullYear(),h=String(n.getHours()).padStart(2,"0"),mi=String(n.getMinutes()).padStart(2,"0");return `${d}-${m}-${y} ${h}:${mi}`;})();
+  const settingsUrl=acts.docType==="awb"?"https://www.google.com":"https://www.intemo.tech/blautomation/settings";
   const totalW=xs[4]+CW+20, totalH=400;
   return(
     <div style={{overflowX:"auto",overflowY:"auto",background:C.canvas,borderRadius:10,border:`1px solid ${C.border}`,flex:1,minHeight:0}}>
@@ -1011,7 +1031,7 @@ function FlowChart({wfConfig,onEditNode}) {
         <Connector i={3} configured={hasO}/>
 
         {/* Node 1 — Trigger */}
-        <NodeCard idx={0} title={trigLabel} subtitle="Trigger" color={C.blue} icon="✉" configured={hasT} onClick={()=>onEditNode("trigger")}>
+        <NodeCard idx={0} title={trigLabel} subtitle="Trigger" color={C.blue} icon="✉" configured={hasT} onClick={()=>onEditNode("trigger")} settingsUrl={settingsUrl}>
           <div style={{marginBottom:7}}>
             <div style={{fontSize:8,fontWeight:700,color:C.textLight,textTransform:"uppercase",marginBottom:4}}>Source</div>
             <div style={{display:"flex",gap:4,flexWrap:"wrap"}}>
@@ -1029,7 +1049,7 @@ function FlowChart({wfConfig,onEditNode}) {
         </NodeCard>
 
         {/* Node 2 — Document Reader */}
-        <NodeCard idx={1} title="Document Reader" subtitle="Action" color={C.accent} icon="📄" configured={hasA} onClick={()=>onEditNode("actions")}>
+        <NodeCard idx={1} title="Document Reader" subtitle="Action" color={C.accent} icon="📄" configured={hasA} onClick={()=>onEditNode("actions")} settingsUrl={settingsUrl}>
           <div style={{marginBottom:6}}>
             <div style={{fontSize:8,fontWeight:700,color:C.textLight,textTransform:"uppercase",marginBottom:4}}>File Type</div>
             <div style={{display:"flex",gap:4}}>
@@ -1048,20 +1068,23 @@ function FlowChart({wfConfig,onEditNode}) {
         </NodeCard>
 
         {/* Node 3 — Extract Fields */}
-        <NodeCard idx={2} title="Extract Fields" subtitle="AI Agent" color={docColor} icon="✨" configured={hasA&&!!acts.docType} onClick={()=>onEditNode("actions")}>
+        <NodeCard idx={2} title="Extract Fields" subtitle="AI Agent" color={docColor} icon="✨" configured={hasA&&!!acts.docType} onClick={()=>onEditNode("actions")} settingsUrl={settingsUrl}>
           {acts.docType?(
             <>
               <div style={{fontSize:8,fontWeight:700,color:docColor,textTransform:"uppercase",marginBottom:5}}>Reading {docShort}</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 8px"}}>
                 {(selFields.length>0?selFields:DOC_TYPES[acts.docType]?.fields||[]).slice(0,8).map(f=>(
                   <Row key={f} label={f} value={
-                    ["BL Number","AWB Number","Invoice Number","SI Number"].includes(f)?"BK-552187":
-                    ["Shipper Name","Shipper","Vendor Name"].includes(f)?"ASTRA EXPORTS":
-                    ["Consignee Name","Consignee","Customer Name"].includes(f)?"VANDER B.V.":
-                    ["Port of Loading"].includes(f)?"NHAVA SHEVA":
-                    ["Port of Discharge"].includes(f)?"ROTTERDAM":
-                    f.includes("Date")?"16-Sep-2024":
-                    f.includes("Weight")?"2,450 KG":f.includes("Amount")||f.includes("Total")?"USD 4,200":"—"
+                    acts.docType==="awb"?(
+                      f==="AWB Number"?"176-85821934":f==="Airline Code"?"176":f==="Airline Name"?"Emirates":f==="Vendor Name"?"GEODIS FREIGHT":f==="Flight #"?"EK-607":f==="Date"?"16-Sep-2026":f==="Origin"?"BOM — Chhatrapati Shivaji Intl":f==="Destination"?"DXB — Dubai International":f==="Product Description"?"TEXTILE GOODS":f==="Weight (kg)"?"1,840 KG":f==="Volume (cbm)"?"12 CBM":f==="Freight Amount"?"USD 3,200":f==="Currency"?"USD":f==="LAT"?latDisplay:f==="Pickup"?"14-09-2026":f==="Delivery Point"?"DXB Cargo Terminal 2":f==="SCI"?"SCI-00412":f==="ULD"?"AKE-12345-EK":"—"
+                    ):(
+                      ["BL Number","AWB Number","Invoice Number","SI Number"].includes(f)?"BK-552187":
+                      ["Shipper Name","Shipper","Vendor Name"].includes(f)?"ASTRA EXPORTS":
+                      ["Consignee Name","Consignee","Customer Name"].includes(f)?"VANDER B.V.":
+                      ["Port of Loading"].includes(f)?"NHAVA SHEVA":
+                      ["Port of Discharge"].includes(f)?"ROTTERDAM":
+                      f.includes("Date")?"16-Sep-2026":f.includes("Weight")?"2,450 KG":f.includes("Amount")||f.includes("Total")?"USD 4,200":"—"
+                    )
                   }/>
                 ))}
               </div>
@@ -1070,7 +1093,7 @@ function FlowChart({wfConfig,onEditNode}) {
         </NodeCard>
 
         {/* Node 4 — Validation / Masters */}
-        <NodeCard idx={3} title="Validation Rules" subtitle="Logic" color={C.amber} icon="🛡" configured={hasR||hasM} onClick={()=>onEditNode("rules")}>
+        <NodeCard idx={3} title="Validation Rules" subtitle="Logic" color={C.amber} icon="🛡" configured={hasR||hasM} onClick={()=>onEditNode("rules")} settingsUrl={settingsUrl}>
           {(hasR||hasM)?(
             <>
               {hasM&&masterList.slice(0,2).map(mk=>(
@@ -1086,17 +1109,18 @@ function FlowChart({wfConfig,onEditNode}) {
                   <span style={{color:C.textMid}}>{r.label}{r.logic?`: ${r.logic.slice(0,40)}${r.logic.length>40?"…":""}`:""}</span>
                 </div>
               ))}
+              {acts.docType==="awb"&&latInfo&&<div style={{marginTop:5,padding:"4px 7px",background:"#FFF7ED",border:`1px solid ${C.amberMid}`,borderRadius:6,fontSize:9}}><div style={{fontWeight:700,color:C.amber,marginBottom:1}}>LAT Mapping</div><div style={{color:C.textMid}}>{latInfo.mapped}</div><div style={{color:C.textMuted,marginTop:1}}>Resolved: {latInfo.display}</div></div>}
             </>
           ):<div style={{color:C.textLight,fontSize:11}}>Configure rules &amp; masters</div>}
         </NodeCard>
 
         {/* Node 5 — Output (dynamic label) */}
-        <NodeCard idx={4} title={outMethodLabel} subtitle="Output" color={C.accent} icon={OUTPUT_TYPES[outs.type]?.icon||"🏢"} configured={hasO} onClick={()=>onEditNode("output")}>
+        <NodeCard idx={4} title={outMethodLabel} subtitle="Output" color={C.accent} icon={OUTPUT_TYPES[outs.type]?.icon||"🏢"} configured={hasO} onClick={()=>onEditNode("output")} settingsUrl={settingsUrl}>
           {hasO?(
             <>
               <div style={{fontSize:8,fontWeight:700,color:C.accent,textTransform:"uppercase",marginBottom:5}}>{OUTPUT_LABELS[outs.type]||"Delivery"} · {docShort}</div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"3px 8px",marginBottom:6}}>
-                {[["BOOKING #","BK-552187"],["POL","NHAVA SHEVA"],["CONSIGNEE","VANDER B.V."],["DELIVERY",masters.items?.includes("carrier")?"RHN-014":"—"]].map(([l,v])=>(
+                {(acts.docType==="awb"?[["AWB #","176-85821934"],["ORIGIN","BOM"],["DEST","DXB"],["AIRLINE","Emirates / 176"]]:[["BOOKING #","BK-552187"],["POL","NHAVA SHEVA"],["CONSIGNEE","VANDER B.V."],["DELIVERY",masters.items?.includes("carrier")?"RHN-014":"—"]]).map(([l,v])=>(
                   <Row key={l} label={l} value={v}/>
                 ))}
               </div>
