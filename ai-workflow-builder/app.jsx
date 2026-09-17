@@ -2,21 +2,21 @@ const { useState, useEffect, useRef, useCallback } = React;
 
 // ─── THEME ────────────────────────────────────────────────────────────────────
 const C = {
-  bg:"#F0F2F5", canvas:"#E8EBF0",
-  panel:"#FFFFFF", panelB:"#F8F9FB",
-  border:"#E2E6EC", borderB:"#D0D5DD",
-  accent:"#16A34A", accentB:"#15803D", accentLight:"#DCFCE7", accentMid:"#BBF7D0",
-  blue:"#2563EB", blueLight:"#DBEAFE", blueMid:"#BFDBFE",
-  purple:"#7C3AED", purpleLight:"#EDE9FE",
-  amber:"#D97706", amberLight:"#FEF3C7", amberMid:"#FDE68A",
-  red:"#DC2626", redLight:"#FEE2E2", redMid:"#FECACA",
-  cyan:"#0891B2", cyanLight:"#CFFAFE",
-  orange:"#EA580C",
-  text:"#111827", textMid:"#374151", textMuted:"#6B7280", textLight:"#9CA3AF",
+  bg:"#F2F5FB", canvas:"#E8EEF8",
+  panel:"#FFFFFF", panelB:"#F0F5FB",
+  border:"#CDDAEE", borderB:"#B5C8E8",
+  accent:"#3DAA3B", accentB:"#2E8A2C", accentLight:"#E6F7E6", accentMid:"#B2E0B1",
+  blue:"#1B4FD8", blueB:"#1440B0", blueLight:"#E6ECFB", blueMid:"#B8C8F5",
+  purple:"#5B3DB8", purpleLight:"#EDE9FE",
+  amber:"#B86B00", amberLight:"#FEF3C7", amberMid:"#FDE099",
+  red:"#C82222", redLight:"#FEE2E2", redMid:"#FECACA",
+  cyan:"#0A7A9A", cyanLight:"#CFFAFE",
+  orange:"#B84800",
+  text:"#0A1A3D", textMid:"#1C3060", textMuted:"#4E6490", textLight:"#8498C0",
   white:"#FFFFFF",
-  shadow:"0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06)",
-  shadowMd:"0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.05)",
-  shadowLg:"0 10px 15px rgba(0,0,0,.08),0 4px 6px rgba(0,0,0,.05)",
+  shadow:"0 1px 4px rgba(27,79,216,.09),0 1px 2px rgba(27,79,216,.05)",
+  shadowMd:"0 4px 8px rgba(27,79,216,.10),0 2px 4px rgba(27,79,216,.06)",
+  shadowLg:"0 10px 20px rgba(27,79,216,.12),0 4px 8px rgba(27,79,216,.06)",
 };
 
 // ─── STATIC DATA ──────────────────────────────────────────────────────────────
@@ -989,23 +989,24 @@ function FlowChart({wfConfig,onEditNode}) {
   function Connector({i,configured}){
     const x1=xs[i]+CW, y1=mid(i), x2=xs[i+1], y2=mid(i+1);
     const mx=(x1+x2)/2;
-    return <path d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" stroke={configured?C.accent:"#D1D5DB"} strokeWidth={configured?2.5:1.5} markerEnd={`url(#arr-${configured?"g":"gr"})`}/>;
+    const col=configured?C.blue:"#C8D5EC";
+    return <g><path d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" stroke={col} strokeWidth={configured?2.2:1.5} markerEnd={`url(#arr-${configured?"g":"gr"})`}/><circle cx={x1} cy={y1} r={5} fill="white" stroke={col} strokeWidth={1.8}/><circle cx={x2} cy={y2} r={5} fill="white" stroke={col} strokeWidth={1.8}/></g>;
   }
   function NodeCard({idx,title,subtitle,color,icon,children,configured,onClick,settingsUrl}){
     const x=xs[idx], y=ys[idx], w=CW, h=heights[idx];
     return(
       <foreignObject x={x} y={y} width={w} height={h}>
         <div xmlns="http://www.w3.org/1999/xhtml"
-          style={{cursor:"default",background:"white",border:`1.5px solid ${configured?color:C.border}`,borderRadius:12,height:"100%",overflow:"hidden",boxShadow:configured?`0 4px 12px ${color}22`:C.shadowMd,fontFamily:"Inter,sans-serif",fontSize:12,userSelect:"none"}}>
-          <div style={{padding:"7px 10px",borderBottom:`1px solid ${C.border}`,background:configured?color+"08":"#FAFAFA",display:"flex",alignItems:"center",gap:6}}>
-            <div style={{width:22,height:22,borderRadius:6,background:configured?color+"18":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0}}>{icon}</div>
+          style={{cursor:"default",background:"#FFFFFF",border:"1.5px solid #D8E2F0",borderRadius:14,height:"100%",overflow:"hidden",boxShadow:"0 2px 12px rgba(27,79,216,.10),0 1px 3px rgba(27,79,216,.06)",fontFamily:"Inter,sans-serif",fontSize:12,userSelect:"none"}}>
+          <div style={{padding:"8px 10px",borderBottom:"1px solid #EEF2FA",background:"#FFFFFF",display:"flex",alignItems:"center",gap:6}}>
+            <button title="Settings" onClick={e=>{e.stopPropagation();const a=document.createElement("a");a.href=settingsUrl;a.target="_blank";a.rel="noopener noreferrer";document.body.appendChild(a);a.click();document.body.removeChild(a);}} style={{width:17,height:17,borderRadius:4,border:"1px solid #D8E2F0",background:"#F4F7FC",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:9,color:"#8498C0",padding:0,lineHeight:1}}>⚙</button>
+            <div style={{width:22,height:22,borderRadius:6,background:"#E6ECFB",border:"1px solid #B8C8F5",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,flexShrink:0}}>{icon}</div>
             <div style={{flex:1,minWidth:0,cursor:onClick?"pointer":"default"}} onClick={onClick}>
-              <div style={{fontSize:11,fontWeight:700,color:configured?color:C.textMid,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{title}</div>
-              <div style={{fontSize:8,color:C.textLight,textTransform:"uppercase",letterSpacing:".06em"}}>{subtitle}</div>
+              <div style={{fontSize:11,fontWeight:700,color:"#0A1A3D",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{title}</div>
+              <div style={{fontSize:8,color:"#8498C0",textTransform:"uppercase",letterSpacing:".07em",fontWeight:600}}>{subtitle}</div>
             </div>
-            <button title="Settings" onClick={e=>{e.stopPropagation();const a=document.createElement("a");a.href=settingsUrl;a.target="_blank";a.rel="noopener noreferrer";document.body.appendChild(a);a.click();document.body.removeChild(a);}}
-              style={{width:20,height:20,borderRadius:5,border:`1px solid ${configured?color+"55":C.border}`,background:configured?color+"12":"#F3F4F6",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",flexShrink:0,fontSize:11,color:configured?color:C.textMuted,lineHeight:1,padding:0}}>⚙</button>
-            <div style={{width:7,height:7,borderRadius:"50%",background:configured?C.accent:"#E5E7EB",flexShrink:0}}/>
+            <span style={{color:"#B8C8F5",fontSize:10,letterSpacing:"1px",flexShrink:0,lineHeight:1}}>⋮⋮</span>
+            <div style={{width:8,height:8,borderRadius:"50%",background:configured?"#3DAA3B":"#D8E2F0",flexShrink:0,boxShadow:configured?"0 0 0 2.5px #B2E0B166":"none"}}/>
           </div>
           <div style={{padding:"8px 10px"}}>{children}</div>
         </div>
@@ -1013,17 +1014,18 @@ function FlowChart({wfConfig,onEditNode}) {
     );
   }
   function Row({label,value,color}){return(<div style={{marginBottom:5}}><div style={{fontSize:8,fontWeight:600,textTransform:"uppercase",letterSpacing:".04em",color:C.textLight}}>{label}</div><div style={{fontSize:10,fontWeight:600,color:color||C.text,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{value||<span style={{color:C.textLight,fontWeight:400}}>—</span>}</div></div>);}
+  function FieldPill({label,selected=true}){return <span style={{display:"inline-block",padding:"2px 8px",borderRadius:20,fontSize:9,fontWeight:600,marginRight:4,marginBottom:4,background:selected?C.accent:"transparent",color:selected?"#FFFFFF":C.textLight,border:`1.5px solid ${selected?C.accent:C.border}`,lineHeight:1.6}}>{label}</span>;}
 
   const latInfo=acts.docType==="awb"?resolveLAT(rules):null;
   const latDisplay=latInfo?latInfo.display:(()=>{const n=new Date();const d=String(n.getDate()).padStart(2,"0"),m=String(n.getMonth()+1).padStart(2,"0"),y=n.getFullYear(),h=String(n.getHours()).padStart(2,"0"),mi=String(n.getMinutes()).padStart(2,"0");return `${d}-${m}-${y} ${h}:${mi}`;})();
-  const settingsUrl=acts.docType==="awb"?"https://www.google.com":"https://www.intemo.tech/blautomation/settings";
+  const settingsUrl=acts.docType==="awb"?"https://www.intemo.tech/PouchMAWB/settings/":"https://www.intemo.tech/blautomation/settings";
   const totalW=xs[4]+CW+20, totalH=400;
   return(
-    <div style={{overflowX:"auto",overflowY:"auto",background:C.canvas,borderRadius:10,border:`1px solid ${C.border}`,flex:1,minHeight:0}}>
+    <div style={{overflowX:"auto",overflowY:"auto",flex:1,minHeight:0,borderRadius:12,border:"1px solid #D8E2F0",background:"#EEF2FA",backgroundImage:"radial-gradient(circle,#C8D5EC 1px,transparent 1px)",backgroundSize:"22px 22px"}}>
       <svg width={totalW} height={totalH} style={{display:"block",minWidth:totalW,overflow:"visible"}}>
         <defs>
-          <marker id="arr-g" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill={C.accent}/></marker>
-          <marker id="arr-gr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><polygon points="0 0,8 4,0 8" fill="#D1D5DB"/></marker>
+          <marker id="arr-g" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><polygon points="0 0,10 5,0 10" fill="#1B4FD8"/></marker>
+          <marker id="arr-gr" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><polygon points="0 0,10 5,0 10" fill="#C8D5EC"/></marker>
         </defs>
         <Connector i={0} configured={hasT&&hasA}/>
         <Connector i={1} configured={hasA&&(hasR||hasM)}/>
@@ -1339,7 +1341,7 @@ const CSS=`
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{background:${C.bg};color:${C.text};font-family:'Inter',sans-serif;font-size:13px;height:100vh;overflow:hidden;}
-::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-thumb{background:#D1D5DB;border-radius:3px;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-thumb{background:${C.blueMid};border-radius:3px;}
 button{cursor:pointer;border:none;background:none;color:inherit;font-family:inherit;font-size:inherit;}
 input,select,textarea{font-family:inherit;font-size:12px;color:${C.text};}
 .fade-in{animation:fadeIn .2s ease;}
@@ -1347,13 +1349,13 @@ input,select,textarea{font-family:inherit;font-size:12px;color:${C.text};}
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 .tab-btn{padding:10px 16px;font-size:12px;font-weight:500;color:${C.textMuted};border-bottom:2px solid transparent;transition:all .15s;background:none;border-left:none;border-right:none;border-top:none;font-family:'Inter',sans-serif;}
-.tab-btn:hover{color:${C.text};}
-.tab-btn.active{color:${C.accent};border-bottom-color:${C.accent};font-weight:600;}
-.btn-run{background:${C.accent};color:white;border-radius:7px;padding:6px 16px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:6px;transition:background .15s;font-family:'Inter',sans-serif;border:none;cursor:pointer;}
-.btn-run:hover{background:${C.accentB};}
+.tab-btn:hover{color:${C.blue};}
+.tab-btn.active{color:${C.blue};border-bottom-color:${C.blue};font-weight:600;}
+.btn-run{background:${C.blue};color:white;border-radius:7px;padding:6px 16px;font-weight:600;font-size:12px;display:inline-flex;align-items:center;gap:6px;transition:background .15s;font-family:'Inter',sans-serif;border:none;cursor:pointer;}
+.btn-run:hover{background:${C.blueB};}
 .btn-run:disabled{opacity:.4;cursor:not-allowed;}
 .btn-save{border:1px solid ${C.border};border-radius:7px;padding:5px 12px;color:${C.textMid};font-size:12px;font-weight:500;transition:all .15s;background:white;font-family:'Inter',sans-serif;}
-.btn-save:hover{border-color:${C.accent};color:${C.accent};}
+.btn-save:hover{border-color:${C.blue};color:${C.blue};}
 `;
 
 // ─── TABS CONFIG ──────────────────────────────────────────────────────────────
@@ -1435,12 +1437,13 @@ function App(){
       {showSim&&<Simulation onClose={()=>setShowSim(false)} wfConfig={{...config,name:wfName}}/>}
       <div style={{display:"flex",flexDirection:"column",height:"100vh",background:C.bg}}>
         {/* TOP BAR */}
-        <div style={{height:52,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",padding:"0 18px",gap:14,flexShrink:0,background:C.white,boxShadow:"0 1px 3px rgba(0,0,0,.06)"}}>
-          <div style={{display:"flex",alignItems:"center",gap:9}}>
-            <div style={{width:28,height:28,borderRadius:7,background:"#111827",display:"flex",alignItems:"center",justifyContent:"center"}}>
-              <span style={{color:"white",fontSize:15,fontWeight:800,fontStyle:"italic"}}>i</span>
-            </div>
-            <span style={{fontWeight:700,fontSize:14,color:C.text,letterSpacing:-.3}}>FlowBridge</span>
+        <div style={{height:52,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",padding:"0 18px",gap:14,flexShrink:0,background:C.white,boxShadow:"0 1px 4px rgba(27,79,216,.10)"}}>
+          <div style={{display:"flex",alignItems:"center",gap:0}}>
+            <svg width="130" height="38" viewBox="0 0 130 38" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Intemo">
+              <circle cx="19" cy="4.5" r="4" fill="#3DAA3B"/>
+              <path d="M22 9 Q26 7 24 11M24 11 Q20 20 18 30M18 30 Q14 34 16 37" stroke="#1B4FD8" strokeWidth="2.6" strokeLinecap="round" fill="none"/>
+              <text x="30" y="31" fontFamily="Inter,Arial,sans-serif" fontSize="22" fontWeight="800" fill="#1B4FD8" letterSpacing="0.8">NTEMO</text>
+            </svg>
           </div>
           <div style={{width:1,height:20,background:C.border}}/>
           <span style={{fontSize:13,fontWeight:600,color:C.text}}>AI Workflow Builder</span>
@@ -1463,8 +1466,8 @@ function App(){
           {view!=="dashboard"&&(
             <div style={{marginLeft:"auto",display:"flex",gap:6,paddingBottom:2}}>
               {[{id:"conversational",icon:"💬",label:"Conversational"},{id:"instruction",icon:"🔧",label:"Instruction"}].map(m=>(
-                <button key={m.id} onClick={()=>setInputMode(m.id)}
-                  style={{padding:"3px 10px",fontSize:11,borderRadius:20,border:`1.5px solid ${inputMode===m.id?C.accent:C.border}`,background:inputMode===m.id?C.accentLight:"transparent",color:inputMode===m.id?C.accentB:C.textMuted,cursor:"pointer",fontWeight:inputMode===m.id?600:400}}>
+                  <button key={m.id} onClick={()=>setInputMode(m.id)}
+                  style={{padding:"3px 10px",fontSize:11,borderRadius:20,border:`1.5px solid ${inputMode===m.id?C.blue:C.border}`,background:inputMode===m.id?C.blueLight:"transparent",color:inputMode===m.id?C.blue:C.textMuted,cursor:"pointer",fontWeight:inputMode===m.id?600:400}}>
                   {m.icon} {m.label}
                 </button>
               ))}
@@ -1480,7 +1483,7 @@ function App(){
                 const isA=tab===t.id; const conf=isTabConfigured(t.id,config);
                 return(
                   <button key={t.id} onClick={()=>{setTab(t.id);setShowErrors(false);}}
-                    style={{width:"100%",padding:"9px 10px",borderRadius:8,background:isA?C.accentLight:"transparent",border:`1.5px solid ${isA?C.accent:C.border}`,color:isA?C.accentB:C.textMid,fontWeight:isA?600:400,fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:8,marginBottom:4,transition:"all .15s",position:"relative"}}>
+                    style={{width:"100%",padding:"9px 10px",borderRadius:8,background:isA?C.blueLight:"transparent",border:`1.5px solid ${isA?C.blue:C.border}`,color:isA?C.blue:C.textMid,fontWeight:isA?600:400,fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",gap:8,marginBottom:4,transition:"all .15s",position:"relative"}}>
                     <span style={{fontSize:15}}>{t.icon}</span>
                     <span style={{flex:1,textAlign:"left"}}>{t.label}</span>
                     {conf&&<span style={{width:6,height:6,borderRadius:"50%",background:C.accent,flexShrink:0}}/>}
